@@ -107,9 +107,10 @@ class classify:
 		return (df)
 
 	def elmo_vectors(x):
+	
 		elmo = hub.Module("https://tfhub.dev/google/elmo/2", trainable=True)
 		embeddings = elmo(x.tolist(), signature="default", as_dict=True)["elmo"]
-
+		
 		with tf.Session() as sess:
 			sess.run(tf.global_variables_initializer())
 			sess.run(tf.tables_initializer())
@@ -117,8 +118,11 @@ class classify:
 			return sess.run(tf.reduce_mean(embeddings,1))
 	
 	def article(text=''):
-	
+		os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 		'https://allennlp.org/models'
+		
+		#following this:
+		#https://www.analyticsvidhya.com/blog/2019/03/learn-to-use-elmo-to-extract-features-from-text/
 		
 		train = classify.clean(sql.query('SELECT * FROM articles LIMIT 400'))
 		test = classify.clean(sql.query('SELECT * FROM articles ORDER BY title DESC LIMIT 300'))
@@ -133,10 +137,12 @@ class classify:
 		list_train = [train[i:i+100] for i in range(0,train.shape[0],100)]
 		list_test = [test[i:i+100] for i in range(0,test.shape[0],100)]
 		
+		
+		
 		# Extract ELMo embeddings
 		elmo_train = [classify.elmo_vectors(x['clean']) for x in list_train]
 		elmo_test = [classify.elmo_vectors(x['clean']) for x in list_test]
-		
+
 		elmo_train_new = np.concatenate(elmo_train, axis = 0)
 		elmo_test_new = np.concatenate(elmo_test, axis = 0)
 		
