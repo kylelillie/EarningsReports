@@ -10,7 +10,7 @@ if not os.path.exists(os.getcwd()+'/data'):
 	os.mkdir(os.getcwd()+'/data')
 
 '''//////////////////////////////
--- articles stored here
+-- articles stored here --
 //////////////////////////////'''
 class sql:
 
@@ -33,11 +33,11 @@ class sql:
 		return (df)
 		
 '''//////////////////////////////
--- article meta tags stored here
+-- article meta tags stored here --
 //////////////////////////////'''
 class mongo:
 
-	def save():
+	def save(post_data={}):
 
 		client = pymongo.MongoClient()
 		db = client.article_tags
@@ -50,7 +50,7 @@ class mongo:
 
 		result = post.insert_one(post_data)
 
-	def query():
+	def query(find={}):
 		
 		find = posts.find_one({
 			'author':'Rando'
@@ -58,10 +58,29 @@ class mongo:
 
 		print (find)
 
+class classify:
+
+	import spacy
+	from tqdm import tqdm
+	import time
+	import pickle
+
+	def article(text=''):
+		'https://allennlp.org/models'
+		
+		train = sql.query('SELECT TOP(400) FROM articles')
+		test = sql.query('SELECT LAST(300) FROM articles')
+		
+		print (train.shape)
+		print (test.shape)
+		
+		pass
+		
+		
 today = datetime.datetime.now().strftime('%Y-%m-%d')
 
 '''//////////////////////////////
--- list of feeds to scrape
+-- list of feeds to scrape --
 //////////////////////////////'''
 rss = ['https://www.globenewswire.com/RssFeed/subjectcode/13-Earnings%20Releases%20And%20Operating%20Results/feedTitle/GlobeNewswire%20-%20Earnings%20Releases%20And%20Operating%20Results'
 	,'https://www.yahoo.com/news/rss/'
@@ -109,6 +128,8 @@ df = df.drop_duplicates(['summary'])
 
 sql.save(df)
 print (sql.query())
+
+classify.article()
 
 '''
 bonus m-lab downloads query!
