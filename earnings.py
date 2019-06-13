@@ -134,8 +134,8 @@ class classify:
 		list_test = [test[i:i+100] for i in range(0,test.shape[0],100)]
 		
 		# Extract ELMo embeddings
-		elmo_train = [elmo_vectors(x['clean_tweet']) for x in list_train]
-		elmo_test = [elmo_vectors(x['clean_tweet']) for x in list_test]
+		elmo_train = [classify.elmo_vectors(x['clean']) for x in list_train]
+		elmo_test = [classify.elmo_vectors(x['clean']) for x in list_test]
 		
 		elmo_train_new = np.concatenate(elmo_train, axis = 0)
 		elmo_test_new = np.concatenate(elmo_test, axis = 0)
